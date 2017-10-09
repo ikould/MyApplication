@@ -40,10 +40,10 @@ public class TransformManager {
     }
 
     public void onDraw(List<GraffitiView.DrawPath> drawPathList, Canvas canvas) {
-        Iterator<DrawPath> iter = savePath.iterator();
+       /* Iterator<DrawPath> iter = savePath.iterator();
         while (iter.hasNext()) {
             DrawPath drawPath = iter.next();
             mCanvas.drawPath(drawPath.path, drawPath.paint);
-        }
+        }*/
     }
 }
