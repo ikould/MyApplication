@@ -59,6 +59,18 @@
                 android:text="颜色"/>
 
             <Button
+                android:id="@+id/shape_choose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="形状"/>
+
+            <Button
+                android:id="@+id/path_transform"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="移动"/>
+
+            <Button
                 android:id="@+id/save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

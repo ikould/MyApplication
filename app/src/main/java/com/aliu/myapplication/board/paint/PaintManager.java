@@ -32,15 +32,14 @@ public class PaintManager {
     }
 
     private PaintManager() {
-        init();
     }
 
     // ====== 操作 ======
     // 画笔
     private Paint mPaint;
-    private int   mColor;
-    private int   mSize;
-    private int   mState; // 0 表示正常模式 1 表示橡皮擦
+    private int mColor = PAINT_DEFAULT_COLOR[0];
+    private int mSize = 5;
+    private int mState; // 0 表示正常模式 1 表示橡皮擦
 
     // ========== 公开方法 ==========
 
@@ -48,6 +47,15 @@ public class PaintManager {
      * 获取画笔
      */
     public Paint getPaint() {
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);// 设置外边缘
+        mPaint.setStrokeCap(Paint.Cap.ROUND);// 形状
+        mPaint.setPathEffect(new DashPathEffect(new float[]{1, 2, 4, 8}, 1));
+        mPaint.setAntiAlias(true);
+        mPaint.setDither(true);
+        mPaint.setStrokeWidth(mSize);
+        setState();
         return mPaint;
     }
 
@@ -87,21 +95,6 @@ public class PaintManager {
     }
 
     // ========== 私有方法 ==========
-
-    /**
-     * 初始化
-     */
-    private void init() {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);// 设置外边缘
-        mPaint.setStrokeCap(Paint.Cap.ROUND);// 形状
-        mPaint.setPathEffect(new DashPathEffect(new float[]{1, 2, 4, 8}, 1));
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
-        mPaint.setStrokeWidth(mSize);
-        setState();
-    }
 
     /**
      * 设置状态

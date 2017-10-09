@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.aliu.myapplication.PluginUtils;
 import com.aliu.myapplication.R;
+import com.aliu.myapplication.board.paint.PaintManager;
+import com.aliu.myapplication.board.shape.ShapeManager;
 import com.ikould.frame.activity.BaseActivity;
 import com.ikould.frame.activity.OnPermissionResultListener;
 
@@ -31,7 +33,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dalvik.system.DexClassLoader;
+
 import com.aliu.myapplication.board.view.GraffitiView;
+
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_ARROW;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_CIRCULAR;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_CUSTOM;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_DEFAULT;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_ELLIPSE;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_FIVE_POINTED_STAR;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_RADIAN;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_RECT;
+import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_SQUARE;
 
 /**
  * describe
@@ -41,25 +54,25 @@ import com.aliu.myapplication.board.view.GraffitiView;
 public class BoardActivity extends BaseActivity {
 
     @BindView(R.id.graffitiView)
-    GraffitiView         graffitiView;
+    GraffitiView graffitiView;
     @BindView(R.id.last_step)
-    Button               lastStep;
+    Button lastStep;
     @BindView(R.id.reset)
-    Button               reset;
+    Button reset;
     @BindView(R.id.paintSize)
-    Button               paintSize;
+    Button paintSize;
     @BindView(R.id.save)
-    Button               save;
+    Button save;
     @BindView(R.id.seekbar)
-    SeekBar              seekbar;
+    SeekBar seekbar;
     @BindView(R.id.recover)
-    Button               recover;
+    Button recover;
     @BindView(R.id.toggle_paint)
-    Button               togglePaint;
+    Button togglePaint;
     @BindView(R.id.ll_bottom)
     HorizontalScrollView llBottom;
     @BindView(R.id.paint_color)
-    Button               paintColor;
+    Button paintColor;
 
     private boolean isVisiable;
 
@@ -140,7 +153,7 @@ public class BoardActivity extends BaseActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    graffitiView.selectPaintSize(progress);
+                    PaintManager.getInstance().setPaintSize(progress);
                 }
             }
 
@@ -157,8 +170,10 @@ public class BoardActivity extends BaseActivity {
     }
 
     private int nowColorIndex = 0;
+    private int nowShapeIndex = 0;
+    private boolean isEraser;
 
-    @OnClick({R.id.last_step, R.id.reset, R.id.paintSize, R.id.save, R.id.recover, R.id.toggle_paint, R.id.paint_color})
+    @OnClick({R.id.last_step, R.id.reset, R.id.paintSize, R.id.save, R.id.recover, R.id.toggle_paint, R.id.paint_color, R.id.shape_choose,R.id.path_transform})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.last_step:
@@ -178,12 +193,25 @@ public class BoardActivity extends BaseActivity {
                 graffitiView.saveToSDCard();
                 break;
             case R.id.toggle_paint:
-                graffitiView.togglePaintStyle();
+                isEraser = !isEraser;
+                PaintManager.getInstance().setIsEraser(isEraser);
                 break;
             case R.id.paint_color:
                 nowColorIndex = (++nowColorIndex) % 7;
-                graffitiView.selectPaintColor(nowColorIndex);
+                PaintManager.getInstance().setPaintColorIndex(nowColorIndex);
+                break;
+            case R.id.shape_choose:
+                nowShapeIndex++;
+                ShapeManager.getInstance().setShapeType(shapes[nowShapeIndex % shapes.length]);
+                break;
+            case R.id.path_transform:
                 break;
         }
     }
+
+    private int[] shapes = new int[]{
+            ShapeManager.SHAPE_DEFAULT, ShapeManager.SHAPE_RECT, ShapeManager.SHAPE_SQUARE,
+            ShapeManager.SHAPE_FIVE_POINTED_STAR, ShapeManager.SHAPE_CIRCULAR, ShapeManager.SHAPE_ELLIPSE,
+            ShapeManager.SHAPE_RADIAN, ShapeManager.SHAPE_ARROW, ShapeManager.SHAPE_CUSTOM
+    };
 }
