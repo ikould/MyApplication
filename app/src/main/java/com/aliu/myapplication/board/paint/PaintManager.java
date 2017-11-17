@@ -38,7 +38,7 @@ public class PaintManager {
     // 画笔
     private Paint mPaint;
     private int mColor = PAINT_DEFAULT_COLOR[0];
-    private int mSize = 5;
+    private int mSize  = 5;
     private int mState; // 0 表示正常模式 1 表示橡皮擦
 
     // ========== 公开方法 ==========
@@ -69,6 +69,9 @@ public class PaintManager {
         mPaint.setColor(mColor);
     }
 
+    /**
+     * 设置具体画笔颜色
+     */
     public void setPaintColor(int color) {
         this.mColor = color;
         mPaint.setColor(mColor);

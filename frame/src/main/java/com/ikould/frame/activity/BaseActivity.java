@@ -158,21 +158,25 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     public boolean popFragment(int id, boolean isDoAnim) {
         Log.d("BaseActivity", "popFragment: fragmentStack.size() = " + fragmentStack.size());
+        for (Fragment fragment : fragmentStack) {
+            Log.d("BaseActivity", "popFragment: fragment = " + fragment);
+        }
         if (fragmentStack.size() == 1) {
             fragmentStack.remove(fragmentStack.lastElement());
             return false;
         }
         if (fragmentStack.size() == 0)
             return false;
+        fragmentStack.remove(fragmentStack.lastElement());
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (isDoAnim) {
             fragmentTransaction.setCustomAnimations(R.anim.anim_in_left, R.anim.anim_out_right);
         }
-        fragmentStack.remove(fragmentStack.lastElement());
+        Log.d("BaseActivity", "popFragment: fragment = " + fragmentStack.lastElement());
         fragmentTransaction.replace(id, fragmentStack.lastElement());
+        fragmentTransaction.commit();
         KeyBoardUtils.closeKeyboard(this);
-        fragmentTransaction.commitAllowingStateLoss();
         return true;
     }
 

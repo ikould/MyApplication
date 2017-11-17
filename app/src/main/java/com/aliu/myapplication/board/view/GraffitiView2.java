@@ -5,20 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PathEffect;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.aliu.myapplication.board.bean.Layer;
 import com.aliu.myapplication.board.paint.PaintManager;
 import com.aliu.myapplication.board.shape.ShapeManager;
 import com.ikould.frame.config.BaseAppConfig;
@@ -32,16 +28,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import static android.R.attr.bitmap;
-import static android.R.attr.type;
-import static android.R.attr.x;
-import static android.R.attr.y;
-import static android.os.Build.VERSION_CODES.M;
-
 /**
  * View实现涂鸦、撤销以及重做功能
  */
-public class GraffitiView extends View {
+public class GraffitiView2 extends View {
 
     private Bitmap mBitmap;
     private Canvas mCanvas;
@@ -66,17 +56,17 @@ public class GraffitiView extends View {
     // 是否使用Path变换
     private boolean isUsePathTransform;
 
-    public GraffitiView(Context context) {
+    public GraffitiView2(Context context) {
         super(context);
         init(context);
     }
 
-    public GraffitiView(Context context, @Nullable AttributeSet attrs) {
+    public GraffitiView2(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public GraffitiView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public GraffitiView2(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

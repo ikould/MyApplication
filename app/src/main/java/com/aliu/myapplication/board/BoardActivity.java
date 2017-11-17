@@ -54,25 +54,25 @@ import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_SQUARE;
 public class BoardActivity extends BaseActivity {
 
     @BindView(R.id.graffitiView)
-    GraffitiView graffitiView;
+    GraffitiView         graffitiView;
     @BindView(R.id.last_step)
-    Button lastStep;
+    Button               lastStep;
     @BindView(R.id.reset)
-    Button reset;
+    Button               reset;
     @BindView(R.id.paintSize)
-    Button paintSize;
+    Button               paintSize;
     @BindView(R.id.save)
-    Button save;
+    Button               save;
     @BindView(R.id.seekbar)
-    SeekBar seekbar;
+    SeekBar              seekbar;
     @BindView(R.id.recover)
-    Button recover;
+    Button               recover;
     @BindView(R.id.toggle_paint)
-    Button togglePaint;
+    Button               togglePaint;
     @BindView(R.id.ll_bottom)
     HorizontalScrollView llBottom;
     @BindView(R.id.paint_color)
-    Button paintColor;
+    Button               paintColor;
 
     private boolean isVisiable;
 
@@ -173,7 +173,7 @@ public class BoardActivity extends BaseActivity {
     private int nowShapeIndex = 0;
     private boolean isEraser;
 
-    @OnClick({R.id.last_step, R.id.reset, R.id.paintSize, R.id.save, R.id.recover, R.id.toggle_paint, R.id.paint_color, R.id.shape_choose,R.id.path_transform})
+    @OnClick({R.id.last_step, R.id.reset, R.id.paintSize, R.id.save, R.id.recover, R.id.toggle_paint, R.id.paint_color, R.id.shape_choose, R.id.path_transform})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.last_step:
@@ -205,6 +205,7 @@ public class BoardActivity extends BaseActivity {
                 ShapeManager.getInstance().setShapeType(shapes[nowShapeIndex % shapes.length]);
                 break;
             case R.id.path_transform:
+                graffitiView.setToTransform();
                 break;
         }
     }
