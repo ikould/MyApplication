@@ -58,7 +58,7 @@ public class HistoryManager {
             return;
         History history = new History();
         history.setMaterialId(materialId);
-        history.setLayerId(layerId);
+        history.setLayerIndex(layerId);
         switch (type) {
             case DRAW_TYPE:
                 if (draw == null)

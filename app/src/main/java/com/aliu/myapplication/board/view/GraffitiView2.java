@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.aliu.myapplication.board.bean.History;
 import com.aliu.myapplication.board.bean.Layer;
+import com.aliu.myapplication.board.history.HistoryManager;
 import com.aliu.myapplication.board.paint.PaintManager;
 import com.aliu.myapplication.board.shape.ShapeManager;
 import com.ikould.frame.config.BaseAppConfig;
@@ -55,6 +57,64 @@ public class GraffitiView2 extends View {
 
     // 是否使用Path变换
     private boolean isUsePathTransform;
+
+
+    // ======== 分割线 ========
+    // 数据
+    private List<Layer> layerList;
+    private int         currentLayerIndex;
+    private Layer       layer;
+
+    /**
+     * 设置图层集合
+     */
+    public void setLayerList(List<Layer> layerList) {
+        this.layerList = layerList;
+    }
+
+    /**
+     * 切换图层
+     */
+    public void switchLayer(int index) {
+        currentLayerIndex = 0;
+        layer = null;
+        if (layerList != null && index < layerList.size() - 1 && index > -0) {
+
+        }
+    }
+
+    /**
+     * 添加本次绘制效果
+     */
+    private void createDraw(Path path) {
+        Layer.Draw draw = new Layer.Draw();
+        draw.setPaint(PaintManager.getInstance().getPaint());
+        draw.setPath(path);
+        if (layer != null)
+            layer.getDrawList().add(draw);
+        // 添加到历史记录
+        createHistory(draw, null, HistoryManager.DRAW_TYPE);
+    }
+
+    /**
+     * 创建位移信息
+     */
+    private void createDrift(Matrix matrix) {
+        Layer.Drift drift = new Layer.Drift();
+        drift.setMatrix(matrix);
+        if (layer != null)
+            layer.getDriftList().add(drift);
+        // 添加到历史记录
+        createHistory(null, drift, HistoryManager.DRIFT_TYPE);
+    }
+
+    /**
+     * 创建历史记录
+     */
+    private void createHistory(Layer.Draw draw, Layer.Drift drift, int type) {
+        HistoryManager.getInstance().addHistory(draw, drift, currentLayerIndex, type);
+    }
+
 
     public GraffitiView2(Context context) {
         super(context);

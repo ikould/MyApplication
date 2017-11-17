@@ -12,14 +12,18 @@ public class History {
     private int         id;
     // 素材id
     private String      materialId;
-    // 图层id
-    private int         layerId;
+    // 图层下标
+    private int         layerIndex;
     // 类型 0：表示操作绘图 1：表示操作矩阵
     private int         type;
     // 当前绘图记录
     private Layer.Drift drift;
     // 当前矩阵操作记录
     private Layer.Draw  draw;
+    // 序列
+    private int         pos;
+    // 添加的时间
+    private long        addTime;
 
     public History() {
     }
@@ -40,12 +44,12 @@ public class History {
         this.materialId = materialId;
     }
 
-    public int getLayerId() {
-        return layerId;
+    public int getLayerIndex() {
+        return layerIndex;
     }
 
-    public void setLayerId(int layerId) {
-        this.layerId = layerId;
+    public void setLayerIndex(int layerIndex) {
+        this.layerIndex = layerIndex;
     }
 
     public int getType() {
@@ -72,15 +76,33 @@ public class History {
         this.draw = draw;
     }
 
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
+
+    public long getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(long addTime) {
+        this.addTime = addTime;
+    }
+
     @Override
     public String toString() {
         return "History{" +
                 "id=" + id +
-                ", materialId=" + materialId +
-                ", layerId=" + layerId +
+                ", materialId='" + materialId + '\'' +
+                ", layerIndex=" + layerIndex +
                 ", type=" + type +
                 ", drift=" + drift +
                 ", draw=" + draw +
+                ", pos=" + pos +
+                ", addTime=" + addTime +
                 '}';
     }
 }

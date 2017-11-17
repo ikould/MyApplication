@@ -1,6 +1,5 @@
 package com.aliu.myapplication.board.shape;
 
-import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.Log;
