@@ -25,7 +25,7 @@ public class Layer {
     private List<Draw>  drawList;
     // 位移Matrix集合
     private List<Drift> driftList;
-    // 图层id
+    // 图层下标
     private int         index;
 
     public Layer() {

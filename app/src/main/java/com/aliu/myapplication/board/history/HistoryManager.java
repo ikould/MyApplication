@@ -4,6 +4,9 @@ import android.text.TextUtils;
 
 import com.aliu.myapplication.board.bean.History;
 import com.aliu.myapplication.board.bean.Layer;
+import com.aliu.myapplication.board.bean.history.DrawHistory;
+import com.aliu.myapplication.board.bean.history.DriftHistory;
+import com.aliu.myapplication.board.bean.history.LayerHistory;
 import com.aliu.myapplication.board.material.MaterialManager;
 
 import java.util.ArrayList;
@@ -49,42 +52,87 @@ public class HistoryManager {
     private List<History> saveHistory;
     private List<History> deleteHistory;
 
+
+    // ========== 公开方法 ==========
+
     /**
-     * 添加历史记录
+     * 添加绘制的历史记录
+     *
+     * @param draw       绘制具体操作
+     * @param layerIndex 当前图层下标
      */
-    public void addHistory(Layer.Draw draw, Layer.Drift drift, int layerId, int type) {
+    public void addHistory(Layer.Draw draw, int layerIndex) {
+        DrawHistory drawHistory = new DrawHistory();
+        drawHistory.setDraw(draw);
+        drawHistory.setLayerIndex(layerIndex);
+        addHistory(drawHistory);
+    }
+
+    /**
+     * 添加矩阵操作的历史记录
+     *
+     * @param drift      矩阵具体操作
+     * @param layerIndex 当前图层下标
+     */
+    public void addHistory(Layer.Drift drift, int layerIndex) {
+        DriftHistory driftHistory = new DriftHistory();
+        driftHistory.setDrift(drift);
+        driftHistory.setLayerIndex(layerIndex);
+        addHistory(driftHistory);
+    }
+
+    /**
+     * 创建或者销毁图层操作的历史记录
+     *
+     * @param layerIndex  操作图层的下标
+     * @param addOrRemove 0: 添加 1:销毁
+     */
+    public void addHistory(int layerIndex, int addOrRemove) {
+        LayerHistory layerHistory = new LayerHistory();
+        layerHistory.setLayerIndex(layerIndex);
+        layerHistory.setType(addOrRemove);
+    }
+
+    /**
+     * 图层顺序变动
+     *
+     * @param layerIndex 当前图层下标
+     * @param fromIndex  开始位置
+     * @param toIndex    结束位置
+     */
+    public void addHistory(int layerIndex, int fromIndex, int toIndex) {
+
+    }
+
+    // ========== 私有方法 ==========
+
+    /**
+     * 当前具体操作添加到历史纪录
+     */
+    private void addHistory(Object object) {
         String materialId = MaterialManager.getInstance().getMaterialId();
         if (TextUtils.isEmpty(materialId))
             return;
         History history = new History();
         history.setMaterialId(materialId);
-        history.setLayerIndex(layerId);
-        switch (type) {
-            case DRAW_TYPE:
-                if (draw == null)
-                    return;
-                history.setDraw(draw);
-                break;
-            case DRIFT_TYPE:
-                if (drift == null)
-                    return;
-                history.setDrift(drift);
-                break;
-            case CREATE_LAYER_TYPE:
-            case DELETE_LAYER_TYPE:
-                break;
-            default:
-                return;
-        }
-        history.setType(type);
+        history.setObject(object);
         if (saveHistory == null) {
             saveHistory = new ArrayList<>();
         }
+        history.setPos(saveHistory.size());
+        history.setAddTime(System.currentTimeMillis());
         saveHistory.add(history);
         // 清除被删除的历史记录
         if (deleteHistory != null && deleteHistory.size() > 0) {
             deleteHistory.clear();
         }
+    }
+
+    /**
+     * 添加历史记录
+     */
+    public void addHistory(Layer.Draw draw, Layer.Drift drift, int layerIndex, int type) {
+
     }
 
     /**

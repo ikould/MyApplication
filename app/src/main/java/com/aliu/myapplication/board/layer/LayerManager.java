@@ -1,10 +1,14 @@
 package com.aliu.myapplication.board.layer;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.Path;
 import android.text.TextUtils;
 
 import com.aliu.myapplication.board.bean.Layer;
+import com.aliu.myapplication.board.history.HistoryManager;
 import com.aliu.myapplication.board.material.MaterialManager;
+import com.aliu.myapplication.board.paint.PaintManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +46,12 @@ public class LayerManager {
 
     // ====== 操作 ======
 
+    // 图层列表
     private List<Layer> layerList;
+    // 当前使用的图层
     private Layer       mLayer;
+    // 当前下标
+    private int         currentIndex;
 
     /**
      * 创建图层
@@ -58,16 +66,19 @@ public class LayerManager {
         if (layerList.size() == MAX_LAYER_NUM) {
             return mLayer;
         }
-        mLayer = new Layer();
-        mLayer.setMaterialId(materialId);
+        Layer layer = new Layer();
+        layer.setMaterialId(materialId);
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        mLayer.setBitmap(bitmap);
+        layer.setBitmap(bitmap);
         List<Layer.Draw> drawList = new ArrayList<>();
-        mLayer.setDrawList(drawList);
+        layer.setDrawList(drawList);
         List<Layer.Drift> driftList = new ArrayList<>();
-        mLayer.setDriftList(driftList);
-        layerList.add(mLayer);
-        return mLayer;
+        layer.setDriftList(driftList);
+        layer.setIndex(layerList.size() - 1);
+        layerList.add(layer);
+        mLayer = layer;
+        currentIndex = mLayer.getIndex();
+        return layer;
     }
 
     /**
@@ -135,4 +146,45 @@ public class LayerManager {
         return drift;
     }
 
+
+    /**
+     * 切换图层
+     */
+    public void switchLayer(int index) {
+        if (layerList != null && index < layerList.size() - 1 && index > -0) {
+            mLayer = layerList.get(index);
+        }
+    }
+
+    /**
+     * 添加本次绘制效果
+     */
+    private void createDraw(Path path) {
+        Layer.Draw draw = new Layer.Draw();
+        draw.setPaint(PaintManager.getInstance().getPaint());
+        draw.setPath(path);
+        if (mLayer != null)
+            mLayer.getDrawList().add(draw);
+        // 添加到历史记录
+        createHistory(draw, null, HistoryManager.DRAW_TYPE);
+    }
+
+    /**
+     * 创建位移信息
+     */
+    private void createDrift(Matrix matrix) {
+        Layer.Drift drift = new Layer.Drift();
+        drift.setMatrix(matrix);
+        if (mLayer != null)
+            mLayer.getDriftList().add(drift);
+        // 添加到历史记录
+        createHistory(null, drift, mLayer.getIndex(), HistoryManager.DRIFT_TYPE);
+    }
+
+    /**
+     * 创建历史记录
+     */
+    private void createHistory(Layer.Draw draw, Layer.Drift drift, int index, int type) {
+        HistoryManager.getInstance().addHistory(draw, drift, index, type);
+    }
 }

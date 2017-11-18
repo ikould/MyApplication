@@ -72,48 +72,6 @@ public class GraffitiView2 extends View {
         this.layerList = layerList;
     }
 
-    /**
-     * 切换图层
-     */
-    public void switchLayer(int index) {
-        currentLayerIndex = 0;
-        layer = null;
-        if (layerList != null && index < layerList.size() - 1 && index > -0) {
-
-        }
-    }
-
-    /**
-     * 添加本次绘制效果
-     */
-    private void createDraw(Path path) {
-        Layer.Draw draw = new Layer.Draw();
-        draw.setPaint(PaintManager.getInstance().getPaint());
-        draw.setPath(path);
-        if (layer != null)
-            layer.getDrawList().add(draw);
-        // 添加到历史记录
-        createHistory(draw, null, HistoryManager.DRAW_TYPE);
-    }
-
-    /**
-     * 创建位移信息
-     */
-    private void createDrift(Matrix matrix) {
-        Layer.Drift drift = new Layer.Drift();
-        drift.setMatrix(matrix);
-        if (layer != null)
-            layer.getDriftList().add(drift);
-        // 添加到历史记录
-        createHistory(null, drift, HistoryManager.DRIFT_TYPE);
-    }
-
-    /**
-     * 创建历史记录
-     */
-    private void createHistory(Layer.Draw draw, Layer.Drift drift, int type) {
-        HistoryManager.getInstance().addHistory(draw, drift, currentLayerIndex, type);
-    }
 
 
     public GraffitiView2(Context context) {
