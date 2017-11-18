@@ -4,7 +4,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.Log;
 
-
 /**
  * 形状管理类
  * <p>
@@ -31,6 +30,8 @@ public class ShapeManager {
     public static final int SHAPE_ARROW = 0x08;
     // 自定义图形
     public static final int SHAPE_CUSTOM = 0x09;
+
+    private static final float TOUCH_TOLERANCE = 4;
 
     // 方向，默认顺时针
     private Path.Direction direction = Path.Direction.CW;
@@ -67,7 +68,8 @@ public class ShapeManager {
         Log.d("ShapeManager", "onDraw:  type = " + type);
         switch (type) {
             case SHAPE_DEFAULT:
-                return false;
+                drawDefault(path, eventPoints);
+                break;
             case SHAPE_RECT: // 长方形
                 onDrawRect(path, eventPoints);
                 break;
@@ -96,6 +98,20 @@ public class ShapeManager {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * 画默认
+     */
+    private void drawDefault(Path path, float[] eventPoints) {
+        float dx = Math.abs(eventPoints[2] - eventPoints[0]);
+        float dy = Math.abs(eventPoints[3] - eventPoints[1]);
+        if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+            // 从x1,y1到x2,y2画一条贝塞尔曲线，更平滑(直接用mPath.lineTo也可以)
+            path.quadTo(eventPoints[0], eventPoints[1], (eventPoints[2] + eventPoints[0]) / 2, (eventPoints[3] + eventPoints[1]) / 2);
+            eventPoints[0] = eventPoints[2];
+            eventPoints[1] = eventPoints[3];
+        }
     }
 
     /**

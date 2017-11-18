@@ -1,6 +1,7 @@
 package com.aliu.myapplication.board.bean;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -16,17 +17,17 @@ import java.util.List;
 public class Layer {
 
     // 主键
-    private int         id;
+    private int id;
     // 素材id
-    private String      materialId;
+    private String materialId;
     // 预览图
-    private Bitmap      bitmap;
+    private Bitmap bitmap;
     // 绘制Path、Paint集合
-    private List<Draw>  drawList;
+    private List<Draw> drawList;
     // 位移Matrix集合
     private List<Drift> driftList;
     // 图层下标
-    private int         index;
+    private int index;
 
     public Layer() {
     }
@@ -81,7 +82,7 @@ public class Layer {
 
     public static class Draw {
         private Paint paint;
-        private Path  path;
+        private Path path;
 
         public Draw() {
         }
@@ -137,7 +138,7 @@ public class Layer {
     public String toString() {
         return "Layer{" +
                 "id=" + id +
-                ", materialId=" + materialId +
+                ", materialId='" + materialId + '\'' +
                 ", bitmap=" + bitmap +
                 ", drawList=" + drawList +
                 ", driftList=" + driftList +

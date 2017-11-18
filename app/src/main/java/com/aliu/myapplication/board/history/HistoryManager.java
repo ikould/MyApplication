@@ -7,6 +7,7 @@ import com.aliu.myapplication.board.bean.Layer;
 import com.aliu.myapplication.board.bean.history.DrawHistory;
 import com.aliu.myapplication.board.bean.history.DriftHistory;
 import com.aliu.myapplication.board.bean.history.LayerHistory;
+import com.aliu.myapplication.board.bean.history.LayerPosHistory;
 import com.aliu.myapplication.board.material.MaterialManager;
 
 import java.util.ArrayList;
@@ -19,15 +20,6 @@ import java.util.List;
  */
 
 public class HistoryManager {
-
-    // 图层内部绘制操作
-    public static final int DRAW_TYPE         = 0;
-    // 图层内部矩阵操作
-    public static final int DRIFT_TYPE        = 1;
-    // 创建图层
-    public static final int CREATE_LAYER_TYPE = 2;
-    // 删除图层
-    public static final int DELETE_LAYER_TYPE = 3;
 
     // ====== 单例 ======
 
@@ -91,6 +83,7 @@ public class HistoryManager {
         LayerHistory layerHistory = new LayerHistory();
         layerHistory.setLayerIndex(layerIndex);
         layerHistory.setType(addOrRemove);
+        addHistory(layerHistory);
     }
 
     /**
@@ -101,7 +94,11 @@ public class HistoryManager {
      * @param toIndex    结束位置
      */
     public void addHistory(int layerIndex, int fromIndex, int toIndex) {
-
+        LayerPosHistory layerPosHistory = new LayerPosHistory();
+        layerPosHistory.setLayerIndex(layerIndex);
+        layerPosHistory.setFromIndex(fromIndex);
+        layerPosHistory.setToIndex(toIndex);
+        addHistory(layerPosHistory);
     }
 
     // ========== 私有方法 ==========
@@ -126,13 +123,6 @@ public class HistoryManager {
         if (deleteHistory != null && deleteHistory.size() > 0) {
             deleteHistory.clear();
         }
-    }
-
-    /**
-     * 添加历史记录
-     */
-    public void addHistory(Layer.Draw draw, Layer.Drift drift, int layerIndex, int type) {
-
     }
 
     /**

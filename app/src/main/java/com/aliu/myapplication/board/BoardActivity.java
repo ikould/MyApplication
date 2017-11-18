@@ -16,10 +16,15 @@ import android.widget.Toast;
 
 import com.aliu.myapplication.PluginUtils;
 import com.aliu.myapplication.R;
+import com.aliu.myapplication.board.bean.Layer;
+import com.aliu.myapplication.board.layer.GraffitiView2;
+import com.aliu.myapplication.board.layer.LayerManager;
+import com.aliu.myapplication.board.material.MaterialManager;
 import com.aliu.myapplication.board.paint.PaintManager;
 import com.aliu.myapplication.board.shape.ShapeManager;
 import com.ikould.frame.activity.BaseActivity;
 import com.ikould.frame.activity.OnPermissionResultListener;
+import com.ikould.frame.utils.ScreenUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -28,23 +33,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dalvik.system.DexClassLoader;
-
-import com.aliu.myapplication.board.view.GraffitiView;
-
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_ARROW;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_CIRCULAR;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_CUSTOM;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_DEFAULT;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_ELLIPSE;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_FIVE_POINTED_STAR;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_RADIAN;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_RECT;
-import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_SQUARE;
 
 /**
  * describe
@@ -54,25 +48,25 @@ import static com.aliu.myapplication.board.shape.ShapeManager.SHAPE_SQUARE;
 public class BoardActivity extends BaseActivity {
 
     @BindView(R.id.graffitiView)
-    GraffitiView         graffitiView;
+    GraffitiView2 graffitiView;
     @BindView(R.id.last_step)
-    Button               lastStep;
+    Button lastStep;
     @BindView(R.id.reset)
-    Button               reset;
+    Button reset;
     @BindView(R.id.paintSize)
-    Button               paintSize;
+    Button paintSize;
     @BindView(R.id.save)
-    Button               save;
+    Button save;
     @BindView(R.id.seekbar)
-    SeekBar              seekbar;
+    SeekBar seekbar;
     @BindView(R.id.recover)
-    Button               recover;
+    Button recover;
     @BindView(R.id.toggle_paint)
-    Button               togglePaint;
+    Button togglePaint;
     @BindView(R.id.ll_bottom)
     HorizontalScrollView llBottom;
     @BindView(R.id.paint_color)
-    Button               paintColor;
+    Button paintColor;
 
     private boolean isVisiable;
 
@@ -80,6 +74,7 @@ public class BoardActivity extends BaseActivity {
     protected void onBaseCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_board);
         ButterKnife.bind(this);
+        initConfig();
         initListener();
         checkPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, new OnPermissionResultListener() {
             @Override
@@ -147,6 +142,12 @@ public class BoardActivity extends BaseActivity {
         }
     }
 
+    private void initConfig() {
+        MaterialManager.getInstance().setMaterialId("XXOO");
+        LayerManager.getInstance().createLayer(ScreenUtils.getScreenWidth(this), ScreenUtils.getScreenHeight(this));
+        graffitiView.setLayerList(LayerManager.getInstance().getLayerList());
+    }
+
     private void initListener() {
         seekbar.setMax(100);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -205,7 +206,7 @@ public class BoardActivity extends BaseActivity {
                 ShapeManager.getInstance().setShapeType(shapes[nowShapeIndex % shapes.length]);
                 break;
             case R.id.path_transform:
-                graffitiView.setToTransform();
+                //graffitiView.setToTransform();
                 break;
         }
     }

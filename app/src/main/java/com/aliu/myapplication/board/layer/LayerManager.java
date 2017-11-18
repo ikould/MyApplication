@@ -1,8 +1,12 @@
 package com.aliu.myapplication.board.layer;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.text.TextUtils;
 
 import com.aliu.myapplication.board.bean.Layer;
@@ -49,9 +53,9 @@ public class LayerManager {
     // 图层列表
     private List<Layer> layerList;
     // 当前使用的图层
-    private Layer       mLayer;
+    private Layer mLayer;
     // 当前下标
-    private int         currentIndex;
+    private int currentIndex;
 
     /**
      * 创建图层
@@ -78,7 +82,13 @@ public class LayerManager {
         layerList.add(layer);
         mLayer = layer;
         currentIndex = mLayer.getIndex();
+        // 添加历史
+        HistoryManager.getInstance().addHistory(currentIndex, 0);
         return layer;
+    }
+
+    public List<Layer> getLayerList() {
+        return layerList;
     }
 
     /**
@@ -92,21 +102,13 @@ public class LayerManager {
             if (layerList.size() > 0 && --index >= 0) {
                 mLayer = layerList.get(index);
             }
+            // 添加历史
+            // HistoryManager.getInstance().addHistory(currentIndex, 1);
         }
         return mLayer;
     }
 
     // ======== 图层内部操作 ========
-
-    /**
-     * 添加Draw
-     */
-    public void addDraw(Layer.Draw draw) {
-        if (mLayer == null)
-            return;
-        List<Layer.Draw> drawList = mLayer.getDrawList();
-        drawList.add(draw);
-    }
 
     /**
      * 清除最后一个Draw
@@ -120,16 +122,6 @@ public class LayerManager {
             }
         }
         return draw;
-    }
-
-    /**
-     * 添加Drift
-     */
-    public void addDrift(Layer.Drift drift) {
-        if (mLayer == null)
-            return;
-        List<Layer.Drift> driftList = mLayer.getDriftList();
-        driftList.add(drift);
     }
 
     /**
@@ -156,35 +148,62 @@ public class LayerManager {
         }
     }
 
+    private Layer.Draw draw;
+    private Bitmap layerBitmap;
+    private Canvas canvasTemp;
+
     /**
      * 添加本次绘制效果
+     * 保留之前的Bitmap，重新设置一个Bitmap，绘制时先将原先的Bitmap绘制上去，再将目前的Path也绘制上去
      */
-    private void createDraw(Path path) {
-        Layer.Draw draw = new Layer.Draw();
-        draw.setPaint(PaintManager.getInstance().getPaint());
+    public void createDraw(Path path) {
+        layerBitmap = mLayer.getBitmap();
+        Bitmap drawBitmap = Bitmap.createBitmap(layerBitmap.getWidth(), layerBitmap.getHeight(), Bitmap.Config.RGB_565);
+        canvasTemp = new Canvas(drawBitmap);
+        mLayer.setBitmap(drawBitmap);
+        canvasTemp.drawColor(Color.TRANSPARENT);
+        draw = new Layer.Draw();
+        Paint paint = PaintManager.getInstance().getPaint();
+        draw.setPaint(paint);
         draw.setPath(path);
-        if (mLayer != null)
-            mLayer.getDrawList().add(draw);
         // 添加到历史记录
-        createHistory(draw, null, HistoryManager.DRAW_TYPE);
+    }
+
+    /**
+     * 绘制Path
+     */
+    public void drawPath() {
+        if (mLayer != null && draw != null) {
+            canvasTemp.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            canvasTemp.drawBitmap(layerBitmap, 0, 0, null);
+            canvasTemp.drawPath(draw.getPath(), draw.getPaint());
+        }
+    }
+
+    /**
+     * 绘制Path
+     */
+    public void drawOver() {
+        if (layerBitmap != null && !layerBitmap.isRecycled()) {
+            layerBitmap.recycle();
+        }
     }
 
     /**
      * 创建位移信息
      */
-    private void createDrift(Matrix matrix) {
+    public void createDrift(Matrix matrix) {
         Layer.Drift drift = new Layer.Drift();
         drift.setMatrix(matrix);
         if (mLayer != null)
             mLayer.getDriftList().add(drift);
         // 添加到历史记录
-        createHistory(null, drift, mLayer.getIndex(), HistoryManager.DRIFT_TYPE);
     }
 
     /**
      * 创建历史记录
      */
     private void createHistory(Layer.Draw draw, Layer.Drift drift, int index, int type) {
-        HistoryManager.getInstance().addHistory(draw, drift, index, type);
+        // HistoryManager.getInstance().addHistory(draw, drift, index, type);
     }
 }

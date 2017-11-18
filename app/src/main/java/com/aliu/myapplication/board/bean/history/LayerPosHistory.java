@@ -27,6 +27,14 @@ public class LayerPosHistory {
         this.id = id;
     }
 
+    public int getLayerIndex() {
+        return layerIndex;
+    }
+
+    public void setLayerIndex(int layerIndex) {
+        this.layerIndex = layerIndex;
+    }
+
     public int getFromIndex() {
         return fromIndex;
     }
@@ -47,6 +55,7 @@ public class LayerPosHistory {
     public String toString() {
         return "LayerPosHistory{" +
                 "id=" + id +
+                ", layerIndex=" + layerIndex +
                 ", fromIndex=" + fromIndex +
                 ", toIndex=" + toIndex +
                 '}';
