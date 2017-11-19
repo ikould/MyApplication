@@ -20,6 +20,8 @@ public class Layer {
     private int id;
     // 素材id
     private String materialId;
+    // 标题
+    private String title;
     // 预览图
     private Bitmap bitmap;
     // 绘制Path、Paint集合
@@ -46,6 +48,14 @@ public class Layer {
 
     public void setMaterialId(String materialId) {
         this.materialId = materialId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Bitmap getBitmap() {
@@ -139,6 +149,7 @@ public class Layer {
         return "Layer{" +
                 "id=" + id +
                 ", materialId='" + materialId + '\'' +
+                ", title='" + title + '\'' +
                 ", bitmap=" + bitmap +
                 ", drawList=" + drawList +
                 ", driftList=" + driftList +

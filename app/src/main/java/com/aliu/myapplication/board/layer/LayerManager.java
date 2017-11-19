@@ -78,10 +78,11 @@ public class LayerManager {
         layer.setDrawList(drawList);
         List<Layer.Drift> driftList = new ArrayList<>();
         layer.setDriftList(driftList);
-        layer.setIndex(layerList.size() - 1);
+        currentIndex = layerList.size() - 1;
+        layer.setTitle("图层" + currentIndex);
+        layer.setIndex(currentIndex);
         layerList.add(layer);
         mLayer = layer;
-        currentIndex = mLayer.getIndex();
         // 添加历史
         HistoryManager.getInstance().addHistory(currentIndex, 0);
         return layer;

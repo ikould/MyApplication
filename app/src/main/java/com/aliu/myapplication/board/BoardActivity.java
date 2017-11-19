@@ -4,18 +4,23 @@ import android.Manifest;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aliu.myapplication.PluginUtils;
 import com.aliu.myapplication.R;
+import com.aliu.myapplication.board.adapter.LayerAdapter;
 import com.aliu.myapplication.board.bean.Layer;
 import com.aliu.myapplication.board.layer.GraffitiView2;
 import com.aliu.myapplication.board.layer.LayerManager;
@@ -33,7 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,14 +72,18 @@ public class BoardActivity extends BaseActivity {
     HorizontalScrollView llBottom;
     @BindView(R.id.paint_color)
     Button paintColor;
+    @BindView(R.id.rv_layer)
+    RecyclerView rvLayer;
 
     private boolean isVisiable;
+    private List<Layer> layerList;
 
     @Override
     protected void onBaseCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_board);
         ButterKnife.bind(this);
         initConfig();
+        initView();
         initListener();
         checkPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, new OnPermissionResultListener() {
             @Override
@@ -136,16 +145,38 @@ public class BoardActivity extends BaseActivity {
                     llBottom.setBackgroundDrawable(background);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void initView() {
+        graffitiView.setLayerList(layerList);
+        initRecyclerView();
+    }
+
     private void initConfig() {
         MaterialManager.getInstance().setMaterialId("XXOO");
         LayerManager.getInstance().createLayer(ScreenUtils.getScreenWidth(this), ScreenUtils.getScreenHeight(this));
-        graffitiView.setLayerList(LayerManager.getInstance().getLayerList());
+        layerList = LayerManager.getInstance().getLayerList();
+    }
+
+    private void initRecyclerView() {
+        LayerAdapter layerAdapter = new LayerAdapter(this);
+        layerAdapter.setFooterView(getAddTextView());
+        rvLayer.setAdapter(layerAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvLayer.setLayoutManager(linearLayoutManager);
+        layerAdapter.setLayerList(layerList);
+    }
+
+    private TextView getAddTextView() {
+        TextView textView = new TextView(this);
+        textView.setText("+");
+        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(30);
+        return textView;
     }
 
     private void initListener() {
