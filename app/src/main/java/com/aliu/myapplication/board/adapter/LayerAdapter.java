@@ -27,10 +27,10 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
 
     private RecyclerView mRecyclerView;
 
-    private Context mContext;
+    private Context     mContext;
     private List<Layer> layerList;
-    private View viewHead;
-    private View viewFooter;
+    private View        viewHead;
+    private View        viewFooter;
 
     //Type
     private final static int TYPE_NORMAL = 1000;
@@ -49,18 +49,19 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d("LayerAdapter", "onCreateViewHolder: viewType = " + viewType);
-        if (viewType == TYPE_FOOTER) {
+        if (viewType == TYPE_HEADER) {
             return new ViewHolder(viewHead);
-        } else if (viewType == TYPE_HEADER) {
+        } else if (viewType == TYPE_FOOTER) {
             return new ViewHolder(viewFooter);
         } else {
-            return new ViewHolder(getLayout(R.layout.item_layer));
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_layer, parent, false);
+            return new ViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.d("LayerAdapter", "onBindViewHolder: ");
+        Log.d("LayerAdapter", "onBindViewHolder: position = " + position);
         if (!isHeaderView(position) && !isFooterView(position)) {
             if (haveHeaderView())
                 position--;
@@ -74,17 +75,20 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         int count = (layerList == null ? 0 : layerList.size());
+        Log.d("LayerAdapter", "getItemCount: count1 = " + count);
         if (viewHead != null) {
             count++;
         }
         if (viewFooter != null) {
             count++;
         }
+        Log.d("LayerAdapter", "getItemCount: count2 = " + count);
         return count;
     }
 
     @Override
     public int getItemViewType(int position) {
+        Log.d("LayerAdapter", "getItemViewType: position = " + position);
         if (isHeaderView(position)) {
             return TYPE_HEADER;
         } else if (isFooterView(position)) {
@@ -106,13 +110,9 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         }
     }
 
-    private View getLayout(int layoutId) {
-        return LayoutInflater.from(mContext).inflate(layoutId, null);
-    }
-
     public void setHeaderView(View headerView) {
         //避免出现宽度自适应
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(params);
         viewHead = headerView;
         ifGridLayoutManager();
@@ -120,7 +120,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     }
 
     public void setFooterView(View footerView) {
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         footerView.setLayoutParams(params);
         viewFooter = footerView;
         ifGridLayoutManager();
@@ -141,11 +141,11 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     }
 
     private boolean haveHeaderView() {
-        return viewFooter != null;
+        return viewHead != null;
     }
 
     private boolean haveFooterView() {
-        return viewHead != null;
+        return viewFooter != null;
     }
 
     private boolean isHeaderView(int position) {
@@ -161,7 +161,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         @BindView(R.id.iv_layer)
         ImageView ivLayer;
         @BindView(R.id.tv_title)
-        TextView tvTitle;
+        TextView  tvTitle;
 
         public ViewHolder(View itemView) {
             super(itemView);

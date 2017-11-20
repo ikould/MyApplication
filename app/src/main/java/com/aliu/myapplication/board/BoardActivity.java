@@ -53,33 +53,34 @@ import dalvik.system.DexClassLoader;
 public class BoardActivity extends BaseActivity {
 
     @BindView(R.id.graffitiView)
-    GraffitiView2 graffitiView;
+    GraffitiView2        graffitiView;
     @BindView(R.id.last_step)
-    Button lastStep;
+    Button               lastStep;
     @BindView(R.id.reset)
-    Button reset;
+    Button               reset;
     @BindView(R.id.paintSize)
-    Button paintSize;
+    Button               paintSize;
     @BindView(R.id.save)
-    Button save;
+    Button               save;
     @BindView(R.id.seekbar)
-    SeekBar seekbar;
+    SeekBar              seekbar;
     @BindView(R.id.recover)
-    Button recover;
+    Button               recover;
     @BindView(R.id.toggle_paint)
-    Button togglePaint;
+    Button               togglePaint;
     @BindView(R.id.ll_bottom)
     HorizontalScrollView llBottom;
     @BindView(R.id.paint_color)
-    Button paintColor;
+    Button               paintColor;
     @BindView(R.id.rv_layer)
-    RecyclerView rvLayer;
+    RecyclerView         rvLayer;
 
-    private boolean isVisiable;
+    private boolean     isVisiable;
     private List<Layer> layerList;
 
     @Override
     protected void onBaseCreate(Bundle savedInstanceState) {
+        Log.d("BoardActivity", "onBaseCreate: ");
         setContentView(R.layout.activity_board);
         ButterKnife.bind(this);
         initConfig();
@@ -168,6 +169,9 @@ public class BoardActivity extends BaseActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvLayer.setLayoutManager(linearLayoutManager);
+        for (Layer layer : layerList) {
+            Log.d("BoardActivity", "initRecyclerView: layer = " + layer);
+        }
         layerAdapter.setLayerList(layerList);
     }
 

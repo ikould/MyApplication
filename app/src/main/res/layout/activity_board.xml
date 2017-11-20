@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
     <com.aliu.myapplication.board.layer.GraffitiView2
         android:id="@+id/graffitiView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_bottom"
-        android:background="#fff" />
+        android:background="#fff"/>
 
     <!-- 图层 -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_layer"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_above="@+id/ll_bottom" />
+        android:layout_above="@+id/ll_bottom"
+        android:background="#ccc"/>
 
     <HorizontalScrollView
         android:id="@+id/ll_bottom"
@@ -34,55 +35,55 @@
                 android:id="@+id/last_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="撤销" />
+                android:text="撤销"/>
 
             <Button
                 android:id="@+id/recover"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="恢复" />
+                android:text="恢复"/>
 
             <Button
                 android:id="@+id/reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="重做" />
+                android:text="重做"/>
 
             <Button
                 android:id="@+id/paintSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="画笔大小" />
+                android:text="画笔大小"/>
 
             <Button
                 android:id="@+id/toggle_paint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="橡皮擦切换" />
+                android:text="橡皮擦切换"/>
 
             <Button
                 android:id="@+id/paint_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="颜色" />
+                android:text="颜色"/>
 
             <Button
                 android:id="@+id/shape_choose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="形状" />
+                android:text="形状"/>
 
             <Button
                 android:id="@+id/path_transform"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="移动" />
+                android:text="移动"/>
 
             <Button
                 android:id="@+id/save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="保存" />
+                android:text="保存"/>
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -91,5 +92,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/ll_bottom"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 </RelativeLayout>

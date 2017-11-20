@@ -53,9 +53,9 @@ public class LayerManager {
     // 图层列表
     private List<Layer> layerList;
     // 当前使用的图层
-    private Layer mLayer;
+    private Layer       mLayer;
     // 当前下标
-    private int currentIndex;
+    private int         currentIndex;
 
     /**
      * 创建图层
@@ -72,16 +72,16 @@ public class LayerManager {
         }
         Layer layer = new Layer();
         layer.setMaterialId(materialId);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         layer.setBitmap(bitmap);
         List<Layer.Draw> drawList = new ArrayList<>();
         layer.setDrawList(drawList);
         List<Layer.Drift> driftList = new ArrayList<>();
         layer.setDriftList(driftList);
+        layerList.add(layer);
         currentIndex = layerList.size() - 1;
         layer.setTitle("图层" + currentIndex);
         layer.setIndex(currentIndex);
-        layerList.add(layer);
         mLayer = layer;
         // 添加历史
         HistoryManager.getInstance().addHistory(currentIndex, 0);
@@ -150,8 +150,8 @@ public class LayerManager {
     }
 
     private Layer.Draw draw;
-    private Bitmap layerBitmap;
-    private Canvas canvasTemp;
+    private Bitmap     layerBitmap;
+    private Canvas     canvasTemp;
 
     /**
      * 添加本次绘制效果
@@ -159,10 +159,10 @@ public class LayerManager {
      */
     public void createDraw(Path path) {
         layerBitmap = mLayer.getBitmap();
-        Bitmap drawBitmap = Bitmap.createBitmap(layerBitmap.getWidth(), layerBitmap.getHeight(), Bitmap.Config.RGB_565);
+        Bitmap drawBitmap = Bitmap.createBitmap(layerBitmap.getWidth(), layerBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         canvasTemp = new Canvas(drawBitmap);
-        mLayer.setBitmap(drawBitmap);
         canvasTemp.drawColor(Color.TRANSPARENT);
+        mLayer.setBitmap(drawBitmap);
         draw = new Layer.Draw();
         Paint paint = PaintManager.getInstance().getPaint();
         draw.setPaint(paint);

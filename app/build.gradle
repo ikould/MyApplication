@@ -3,12 +3,12 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 27
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.aliu.myapplication"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -47,10 +47,10 @@ repluginHostConfig {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.qihoo360.replugin:replugin-host-lib:2.2.0'
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:27.0.1'
     compile 'com.github.renaudcerrato:ToggleDrawable:1.0.2'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:recyclerview-v7:27.0.1'
     compile project(':frame')
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    apt 'com.jakewharton:butterknife-compiler:8.8.1'
 }

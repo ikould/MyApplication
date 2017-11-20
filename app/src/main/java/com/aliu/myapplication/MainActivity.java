@@ -25,40 +25,11 @@ import java.util.Set;
 
 public class MainActivity extends BaseActivity {
 
-    FragmentTest1 fragmentTest1;
-    FragmentTest2 fragmentTest2;
     JSONObject json = new JSONObject();
 
     @Override
     protected void onBaseCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
-
-        if (fragmentTest1 == null)
-            fragmentTest1 = new FragmentTest1();
-        replaceFragment(R.id.fl_main, fragmentTest1, true);
-        try {
-            json.put("url", "http://www.baidu.com");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (fragmentTest2 == null)
-                    fragmentTest2 = new FragmentTest2();
-                replaceFragment(R.id.fl_main, fragmentTest2, true);
-                try {
-                    Log.d("MainActivity", "onClick: json = " + json);
-                    go2Advertisement(json.getString("url"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
         // Test
         tvText = (MyTextView) findViewById(R.id.tv_text);
 
