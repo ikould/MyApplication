@@ -217,7 +217,6 @@ public class LayerManager {
         // HistoryManager.getInstance().addHistory(draw, drift, index, type);
     }
 
-
     // ======== 监听 ========
     public OnDrawOverListener onDrawOverListener;
 
