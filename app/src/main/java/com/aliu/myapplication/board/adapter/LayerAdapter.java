@@ -31,11 +31,12 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     private List<Layer> layerList;
     private View        viewHead;
     private View        viewFooter;
+    private int         currentIndex;
 
     //Type
-    private final static int TYPE_NORMAL = 1000;
-    private final static int TYPE_HEADER = 1001;
-    private final static int TYPE_FOOTER = 1002;
+    public final static int TYPE_NORMAL = 1000;
+    public final static int TYPE_HEADER = 1001;
+    public final static int TYPE_FOOTER = 1002;
 
     public LayerAdapter(Context mContext) {
         this.mContext = mContext;
@@ -62,14 +63,35 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Log.d("LayerAdapter", "onBindViewHolder: position = " + position);
-        if (!isHeaderView(position) && !isFooterView(position)) {
-            if (haveHeaderView())
-                position--;
-            Log.d("LayerAdapter", "onBindViewHolder: position = " + position);
-            Layer layer = layerList.get(position);
+        boolean isHeaderView = isHeaderView(position);
+        boolean isFooterView = isFooterView(position);
+        position = isHeaderView || isFooterView ? -1 : position;
+        final int resultPos = haveHeaderView() ? --position : position;
+        final int type = isHeaderView ? TYPE_HEADER : isFooterView ? TYPE_FOOTER : TYPE_NORMAL;
+        if (!isHeaderView && !isFooterView) {
+            Log.d("LayerAdapter", "onBindViewHolder: position = " + resultPos);
+            Layer layer = layerList.get(resultPos);
             holder.ivLayer.setImageBitmap(layer.getBitmap());
             holder.tvTitle.setText(layer.getTitle());
+            holder.ivChoose.setVisibility(currentIndex == resultPos ? View.VISIBLE : View.GONE);// 表示选择的当前的结果
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (itemClickListener != null) {
+                    itemClickListener.onClickListener(resultPos, type);
+                }
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (itemClickListener != null) {
+                    itemClickListener.onLongClickListener(resultPos, type);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -101,7 +123,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         try {
-            if (mRecyclerView == null && mRecyclerView != recyclerView) {
+            if (mRecyclerView == null && null != recyclerView) {
                 mRecyclerView = recyclerView;
             }
             ifGridLayoutManager();
@@ -125,6 +147,32 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         viewFooter = footerView;
         ifGridLayoutManager();
         notifyItemInserted(getItemCount() - 1);
+    }
+
+    /**
+     * 设置当前使用的下标
+     */
+    public void setCurrentIndex(int index) {
+        if (index < 0)
+            index = 0;
+        int count = (layerList == null ? 0 : layerList.size());
+        if (index > count)
+            index = count - 1;
+        this.currentIndex = index;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 刷新当前数据下标
+     */
+    public void notifyCurrentIndex() {
+        if (layerList == null || layerList.size() == 0)
+            return;
+        int position = currentIndex;
+        if (haveHeaderView()) {
+            position = currentIndex + 1;
+        }
+        notifyItemChanged(position);
     }
 
     private void ifGridLayoutManager() {
@@ -156,15 +204,34 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         return haveFooterView() && position == getItemCount() - 1;
     }
 
+    // ======== 监听 ========
+
+    private OnItemClickListener itemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onClickListener(int position, int type);
+
+        void onLongClickListener(int position, int type);
+    }
+    // ======== ViewHolder ========
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.iv_choose)
+        ImageView ivChoose;
         @BindView(R.id.iv_layer)
         ImageView ivLayer;
         @BindView(R.id.tv_title)
         TextView  tvTitle;
+        View itemView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            this.itemView = itemView;
             if (itemView != viewHead && itemView != viewFooter) {
                 ButterKnife.bind(this, itemView);
             }

@@ -1,11 +1,5 @@
 package com.aliu.myapplication.board.transform;
 
-import android.graphics.Canvas;
-
-import com.aliu.myapplication.board.view.GraffitiView;
-
-import java.util.List;
-
 /**
  * describe
  * Created by liudong on 2017/10/5.
@@ -39,11 +33,11 @@ public class TransformManager {
         this.isDoTransform = isDoTransform;
     }
 
-    public void onDraw(List<GraffitiView.DrawPath> drawPathList, Canvas canvas) {
-       /* Iterator<DrawPath> iter = savePath.iterator();
+   /* public void onDraw(List<GraffitiView.DrawPath> drawPathList, Canvas canvas) {
+       *//* Iterator<DrawPath> iter = savePath.iterator();
         while (iter.hasNext()) {
             DrawPath drawPath = iter.next();
             mCanvas.drawPath(drawPath.path, drawPath.paint);
-        }*/
-    }
+        }*//*
+    }*/
 }

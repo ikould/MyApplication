@@ -156,25 +156,85 @@ public class BoardActivity extends BaseActivity {
         initRecyclerView();
     }
 
+    /**
+     * 初始化配置
+     */
     private void initConfig() {
         MaterialManager.getInstance().setMaterialId("XXOO");
-        LayerManager.getInstance().createLayer(ScreenUtils.getScreenWidth(this), ScreenUtils.getScreenHeight(this));
         layerList = LayerManager.getInstance().getLayerList();
     }
 
+    private LayerAdapter layerAdapter;
+
+    /**
+     * 初始化RecyclerView
+     */
     private void initRecyclerView() {
-        LayerAdapter layerAdapter = new LayerAdapter(this);
+        layerAdapter = new LayerAdapter(this);
         layerAdapter.setFooterView(getAddTextView());
         rvLayer.setAdapter(layerAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvLayer.setLayoutManager(linearLayoutManager);
-        for (Layer layer : layerList) {
-            Log.d("BoardActivity", "initRecyclerView: layer = " + layer);
-        }
         layerAdapter.setLayerList(layerList);
+        // 默认先加一个图层
+        addLayer();
+        layerAdapter.setOnItemClickListener(new LayerAdapter.OnItemClickListener() {
+            @Override
+            public void onClickListener(int position, int type) {
+                switch (type) {
+                    case LayerAdapter.TYPE_HEADER:
+                        break;
+                    case LayerAdapter.TYPE_FOOTER:
+                        addLayer();
+                        break;
+                    case LayerAdapter.TYPE_NORMAL:
+                        // 切换到当前图层
+                        LayerManager.getInstance().switchLayer(position);
+                        layerAdapter.setCurrentIndex(position);
+                        break;
+                }
+            }
+
+            @Override
+            public void onLongClickListener(int position, int type) {
+                switch (type) {
+                    case LayerAdapter.TYPE_NORMAL:
+                        // 删除选择的图层
+                        deleteLayer(position);
+                        break;
+                }
+            }
+        });
     }
 
+    /**
+     * 添加一个图层
+     */
+    private void addLayer() {
+        int index = LayerManager.getInstance().createLayer(ScreenUtils.getScreenWidth(this), ScreenUtils.getScreenHeight(this));
+        if (layerAdapter != null) {
+            // 切换图层
+            layerAdapter.setCurrentIndex(index);
+        }
+    }
+
+    /**
+     * 删除一个图层
+     */
+    private void deleteLayer(int index) {
+        int resultIndex = LayerManager.getInstance().deleteLayer(index);
+        if (layerAdapter != null) {
+            // 切换图层
+            layerAdapter.setCurrentIndex(resultIndex);
+        }
+        // 刷新画布
+        graffitiView.invalidate();
+    }
+
+    /**
+     * 创建TextView
+     */
     private TextView getAddTextView() {
         TextView textView = new TextView(this);
         textView.setText("+");
@@ -183,7 +243,17 @@ public class BoardActivity extends BaseActivity {
         return textView;
     }
 
+    /**
+     * 初始化监听
+     */
     private void initListener() {
+        LayerManager.getInstance().setOnDrawOverListener(new LayerManager.OnDrawOverListener() {
+            @Override
+            public void drawOver() {
+                if (layerAdapter != null)
+                    layerAdapter.notifyCurrentIndex();
+            }
+        });
         seekbar.setMax(100);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

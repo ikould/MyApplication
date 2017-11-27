@@ -1,10 +1,7 @@
 package com.aliu.myapplication.board.layer;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -14,24 +11,15 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.aliu.myapplication.board.bean.History;
 import com.aliu.myapplication.board.bean.Layer;
-import com.aliu.myapplication.board.history.HistoryManager;
-import com.aliu.myapplication.board.paint.PaintManager;
 import com.aliu.myapplication.board.shape.ShapeManager;
 import com.ikould.frame.config.BaseAppConfig;
-import com.ikould.frame.utils.ScreenUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
-import static android.R.attr.x;
-import static android.R.attr.y;
 
 /**
  * View实现涂鸦、撤销以及重做功能

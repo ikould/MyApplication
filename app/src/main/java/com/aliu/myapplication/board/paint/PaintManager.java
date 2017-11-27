@@ -66,7 +66,8 @@ public class PaintManager {
         if (colorIndex < 0 || colorIndex >= PAINT_DEFAULT_COLOR.length)
             return;
         this.mColor = PAINT_DEFAULT_COLOR[colorIndex];
-        mPaint.setColor(mColor);
+        if (mPaint != null)
+            mPaint.setColor(mColor);
     }
 
     /**
@@ -74,7 +75,8 @@ public class PaintManager {
      */
     public void setPaintColor(int color) {
         this.mColor = color;
-        mPaint.setColor(mColor);
+        if (mPaint != null)
+            mPaint.setColor(mColor);
     }
 
     /**
@@ -94,7 +96,8 @@ public class PaintManager {
      */
     public void setPaintSize(int size) {
         this.mSize = size;
-        mPaint.setStrokeWidth(mSize);
+        if (mPaint != null)
+            mPaint.setStrokeWidth(mSize);
     }
 
     // ========== 私有方法 ==========
@@ -103,14 +106,15 @@ public class PaintManager {
      * 设置状态
      */
     private void setState() {
-        if (mState == 0) {
-            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-            mPaint.setAlpha(255);
-            mPaint.setColor(mColor);
-        } else {//橡皮擦
-            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-            mPaint.setAlpha(0);
-            mPaint.setColor(Color.TRANSPARENT);
-        }
+        if (mPaint != null)
+            if (mState == 0) {
+                mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+                mPaint.setAlpha(255);
+                mPaint.setColor(mColor);
+            } else {//橡皮擦
+                mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+                mPaint.setAlpha(0);
+                mPaint.setColor(Color.TRANSPARENT);
+            }
     }
 }
