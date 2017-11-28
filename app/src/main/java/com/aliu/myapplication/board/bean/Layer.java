@@ -17,19 +17,17 @@ import java.util.List;
 public class Layer {
 
     // 主键
-    private int id;
+    private int         id;
     // 素材id
-    private String materialId;
+    private String      materialId;
     // 标题
-    private String title;
+    private String      title;
     // 预览图
-    private Bitmap bitmap;
+    private Bitmap      bitmap;
     // 绘制Path、Paint集合
-    private List<Draw> drawList;
+    private List<Draw>  drawList;
     // 位移Matrix集合
     private List<Drift> driftList;
-    // 图层下标
-    private int index;
 
     public Layer() {
     }
@@ -82,17 +80,9 @@ public class Layer {
         this.driftList = driftList;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public static class Draw {
         private Paint paint;
-        private Path path;
+        private Path  path;
 
         public Draw() {
         }
@@ -153,7 +143,6 @@ public class Layer {
                 ", bitmap=" + bitmap +
                 ", drawList=" + drawList +
                 ", driftList=" + driftList +
-                ", index=" + index +
                 '}';
     }
 }

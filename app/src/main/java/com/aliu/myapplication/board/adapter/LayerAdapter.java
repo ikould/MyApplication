@@ -5,6 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,7 +13,10 @@ import android.widget.TextView;
 
 import com.aliu.myapplication.R;
 import com.aliu.myapplication.board.bean.Layer;
+import com.aliu.myapplication.view.helper.ItemTouchHelperAdapter;
+import com.aliu.myapplication.view.helper.ItemTouchHelperViewHolder;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,7 +27,7 @@ import butterknife.ButterKnife;
  * Created by liudong on 2017/11/19.
  */
 
-public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> {
+public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
     private RecyclerView mRecyclerView;
 
@@ -61,7 +65,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Log.d("LayerAdapter", "onBindViewHolder: position = " + position);
         boolean isHeaderView = isHeaderView(position);
         boolean isFooterView = isFooterView(position);
@@ -74,6 +78,14 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             holder.ivLayer.setImageBitmap(layer.getBitmap());
             holder.tvTitle.setText(layer.getTitle());
             holder.ivChoose.setVisibility(currentIndex == resultPos ? View.VISIBLE : View.GONE);// 表示选择的当前的结果
+            holder.itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (onDragListener != null)
+                        onDragListener.onStartDrag(holder);
+                    return false;
+                }
+            });
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,6 +224,32 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
         this.itemClickListener = itemClickListener;
     }
 
+    private OnDragListener onDragListener;
+
+    public void setOnDragListener(OnDragListener onDragListener) {
+        this.onDragListener = onDragListener;
+    }
+
+    public interface OnDragListener {
+
+        void onStartDrag(RecyclerView.ViewHolder viewHolder);
+
+        void onDelete(int index);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        Log.d("LayerAdapter", "onItemMove: fromPosition = " + fromPosition + " toPosition = " + toPosition);
+        Collections.swap(layerList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return false;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        Log.d("LayerAdapter", "onItemDismiss: position = " + position);
+    }
+
     public interface OnItemClickListener {
         void onClickListener(int position, int type);
 
@@ -219,7 +257,7 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
     }
     // ======== ViewHolder ========
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 
         @BindView(R.id.iv_choose)
         ImageView ivChoose;
@@ -235,6 +273,16 @@ public class LayerAdapter extends RecyclerView.Adapter<LayerAdapter.ViewHolder> 
             if (itemView != viewHead && itemView != viewFooter) {
                 ButterKnife.bind(this, itemView);
             }
+        }
+
+        @Override
+        public void onItemSelected() {
+            Log.d("ViewHolder", "onItemSelected: ");
+        }
+
+        @Override
+        public void onItemClear() {
+            Log.d("ViewHolder", "onItemClear: ");
         }
     }
 }

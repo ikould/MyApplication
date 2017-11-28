@@ -29,7 +29,7 @@ public class LayerManager {
     /**
      * 最大图层数目
      */
-    public static final int MAX_LAYER_NUM = 5;
+    public static final int MAX_LAYER_NUM = 10;
 
     // ====== 单例 ======
 
@@ -57,6 +57,7 @@ public class LayerManager {
     private Layer mLayer;
     // 当前下标
     private int   currentIndex;
+    private int   nowCreateIndex;
 
     /**
      * 创建图层
@@ -79,8 +80,7 @@ public class LayerManager {
         layer.setDriftList(driftList);
         layerList.add(layer);
         currentIndex = layerList.size() - 1;
-        layer.setTitle("图层" + currentIndex);
-        layer.setIndex(currentIndex);
+        layer.setTitle("图层" + nowCreateIndex++);
         mLayer = layer;
         // 添加历史
         HistoryManager.getInstance().addHistory(currentIndex, 0);
@@ -192,8 +192,6 @@ public class LayerManager {
      * 绘制Path
      */
     public void drawOver() {
-        if (onDrawOverListener != null)
-            onDrawOverListener.drawOver();
         if (layerBitmap != null && !layerBitmap.isRecycled()) {
             layerBitmap.recycle();
         }
@@ -215,16 +213,5 @@ public class LayerManager {
      */
     private void createHistory(Layer.Draw draw, Layer.Drift drift, int index, int type) {
         // HistoryManager.getInstance().addHistory(draw, drift, index, type);
-    }
-
-    // ======== 监听 ========
-    public OnDrawOverListener onDrawOverListener;
-
-    public void setOnDrawOverListener(OnDrawOverListener onDrawOverListener) {
-        this.onDrawOverListener = onDrawOverListener;
-    }
-
-    public interface OnDrawOverListener {
-        void drawOver();
     }
 }

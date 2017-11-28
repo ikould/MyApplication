@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <com.aliu.myapplication.board.layer.GraffitiView2
+    <com.aliu.myapplication.board.layer.GraffitiViewGroup
         android:id="@+id/graffitiView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,7 +15,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_layer"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="150dp"
         android:layout_above="@+id/ll_bottom"
         android:background="#ccc"/>
 
