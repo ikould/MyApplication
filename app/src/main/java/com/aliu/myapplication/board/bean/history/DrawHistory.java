@@ -13,7 +13,7 @@ public class DrawHistory {
     private int        id;
     private Layer.Draw draw;
     // 图层下标
-    private int layerIndex;
+    private int        layerIndex;
 
     public DrawHistory() {
     }

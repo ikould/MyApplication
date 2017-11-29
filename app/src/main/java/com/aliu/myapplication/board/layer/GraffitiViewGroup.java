@@ -1,13 +1,18 @@
 package com.aliu.myapplication.board.layer;
 
 import android.content.Context;
+import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.aliu.myapplication.board.bean.Layer;
+import com.aliu.myapplication.board.shape.ShapeManager;
+import com.aliu.myapplication.board.transform.TransformManager;
 import com.ikould.frame.config.BaseAppConfig;
 
 import java.io.File;
@@ -26,7 +31,12 @@ public class GraffitiViewGroup extends FrameLayout {
     private List<Layer>     layerList;
     // 数据对应的View
     private List<LayerView> layerViewList;
-    private int             currentIndex;
+    private LayerView       currentLayerView;
+    // 触摸事件触发点，downX，downY，currentX，currentY
+    private float[] eventPoints = new float[4];
+    private Path    mPath;
+    // 是否是矩阵操作
+    private boolean isDoTransform;
 
     public GraffitiViewGroup(Context context) {
         super(context);
@@ -67,19 +77,14 @@ public class GraffitiViewGroup extends FrameLayout {
     }
 
     /**
-     * 设置当前的下标
+     * 设置当前的Layer
      */
-    public void setCurrentIndex(int currentIndex) {
-        this.currentIndex = currentIndex;
-    }
-
-    /**
-     * 实时刷新当前的View
-     */
-    public void refreshView() {
-        Log.d("GraffitiViewGroup", "refreshView: currentIndex = " + currentIndex + " getChildCount = " + getChildCount());
-        if (currentIndex >= 0 && currentIndex < getChildCount())
-            getChildAt(currentIndex).invalidate();
+    public void setCurrentLayer(Layer layer) {
+        int position = layerList.indexOf(layer);
+        Log.d("GraffitiViewGroup", "setCurrentLayer: position = " + position);
+        if (position >= 0 && position < getChildCount()) {
+            this.currentLayerView = (LayerView) getChildAt(position);
+        }
     }
 
     /**
@@ -120,6 +125,49 @@ public class GraffitiViewGroup extends FrameLayout {
         layerView.setLayer(layer);
         layerView.setLayoutParams(layoutParams);
         return layerView;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        eventPoints[2] = event.getX();
+        eventPoints[3] = event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.d("GraffitiView2", "onTouchEvent: ACTION_DOWN");
+                isDoTransform = TransformManager.getInstance().getIsDoTransform();
+                if (isDoTransform) { // 矩阵操作
+                    addTransDown();
+                } else {
+                    addDrawDown();
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.d("GraffitiView2", "onTouchEvent: ACTION_MOVE");
+                ShapeManager.getInstance().onDraw(mPath, eventPoints);
+                currentLayerView.drawPath();
+                LayerManager.getInstance().renderPathDraw();
+                break;
+            case MotionEvent.ACTION_UP:
+                currentLayerView.drawOver();
+                LayerManager.getInstance().renderOverPathDraw();
+                break;
+        }
+        return true;
+    }
+
+    private void addTransDown() {
+        // 确定是哪一个PathDraw
+
+    }
+
+    private void addDrawDown() {
+        // 每次down下去重新new一个Draw
+        mPath = new Path();
+        LayerManager.getInstance().addPathDraw(mPath);
+        currentLayerView.createDraw(mPath);
+        mPath.moveTo(eventPoints[2], eventPoints[3]);
+        eventPoints[0] = eventPoints[2];
+        eventPoints[1] = eventPoints[3];
     }
 
     /**

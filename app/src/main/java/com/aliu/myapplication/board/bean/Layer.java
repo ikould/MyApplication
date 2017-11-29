@@ -1,11 +1,12 @@
 package com.aliu.myapplication.board.bean;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,17 +18,17 @@ import java.util.List;
 public class Layer {
 
     // 主键
-    private int         id;
+    private int    id;
     // 素材id
-    private String      materialId;
+    private String materialId;
     // 标题
-    private String      title;
+    private String title;
     // 预览图
-    private Bitmap      bitmap;
+    private Bitmap bitmap;
     // 绘制Path、Paint集合
-    private List<Draw>  drawList;
-    // 位移Matrix集合
-    private List<Drift> driftList;
+    private List<Draw>   drawList = new ArrayList<>();
+    // 引入的图片集合
+    private List<Bitmap> imgList  = new ArrayList<>();
 
     public Layer() {
     }
@@ -72,17 +73,25 @@ public class Layer {
         this.drawList = drawList;
     }
 
-    public List<Drift> getDriftList() {
-        return driftList;
+    public List<Bitmap> getImgList() {
+        return imgList;
     }
 
-    public void setDriftList(List<Drift> driftList) {
-        this.driftList = driftList;
+    public void setImgList(List<Bitmap> imgList) {
+        this.imgList = imgList;
     }
 
     public static class Draw {
-        private Paint paint;
-        private Path  path;
+        // 当前的画笔
+        private Paint  paint;
+        // 当前的Path
+        private Path   path;
+        // 当前的Bitmap
+        private Bitmap bitmap;
+        // 范围
+        private RectF  rectF;
+        // 当前的矩阵
+        private Matrix matrix;
 
         public Draw() {
         }
@@ -103,19 +112,20 @@ public class Layer {
             this.path = path;
         }
 
-        @Override
-        public String toString() {
-            return "Draw{" +
-                    "paint=" + paint +
-                    ", path=" + path +
-                    '}';
+        public Bitmap getBitmap() {
+            return bitmap;
         }
-    }
 
-    public static class Drift {
-        private Matrix matrix;
+        public void setBitmap(Bitmap bitmap) {
+            this.bitmap = bitmap;
+        }
 
-        public Drift() {
+        public RectF getRectF() {
+            return rectF;
+        }
+
+        public void setRectF(RectF rectF) {
+            this.rectF = rectF;
         }
 
         public Matrix getMatrix() {
@@ -128,8 +138,12 @@ public class Layer {
 
         @Override
         public String toString() {
-            return "Drift{" +
-                    "matrix=" + matrix +
+            return "Draw{" +
+                    "paint=" + paint +
+                    ", path=" + path +
+                    ", bitmap=" + bitmap +
+                    ", rectF=" + rectF +
+                    ", matrix=" + matrix +
                     '}';
         }
     }
@@ -142,7 +156,7 @@ public class Layer {
                 ", title='" + title + '\'' +
                 ", bitmap=" + bitmap +
                 ", drawList=" + drawList +
-                ", driftList=" + driftList +
+                ", imgList=" + imgList +
                 '}';
     }
 }

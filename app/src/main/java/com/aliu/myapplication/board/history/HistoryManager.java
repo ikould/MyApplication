@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.aliu.myapplication.board.bean.History;
 import com.aliu.myapplication.board.bean.Layer;
 import com.aliu.myapplication.board.bean.history.DrawHistory;
-import com.aliu.myapplication.board.bean.history.DriftHistory;
 import com.aliu.myapplication.board.bean.history.LayerHistory;
 import com.aliu.myapplication.board.bean.history.LayerPosHistory;
 import com.aliu.myapplication.board.material.MaterialManager;
@@ -60,18 +59,18 @@ public class HistoryManager {
         addHistory(drawHistory);
     }
 
-    /**
+/*    *//**
      * 添加矩阵操作的历史记录
      *
      * @param drift      矩阵具体操作
      * @param layerIndex 当前图层下标
-     */
+     *//*
     public void addHistory(Layer.Drift drift, int layerIndex) {
         DriftHistory driftHistory = new DriftHistory();
         driftHistory.setDrift(drift);
         driftHistory.setLayerIndex(layerIndex);
         addHistory(driftHistory);
-    }
+    }*/
 
     /**
      * 创建或者销毁图层操作的历史记录

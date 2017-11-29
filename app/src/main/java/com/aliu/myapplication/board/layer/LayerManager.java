@@ -1,35 +1,50 @@
 package com.aliu.myapplication.board.layer;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.aliu.myapplication.board.bean.Layer;
-import com.aliu.myapplication.board.history.HistoryManager;
-import com.aliu.myapplication.board.material.MaterialManager;
-import com.aliu.myapplication.board.paint.PaintManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 图层管理
+ * describe
  *
- * @author ikould on 2017/10/27.
+ * @author ikould on 2017/11/29.
  */
 
 public class LayerManager {
 
-    /**
-     * 最大图层数目
-     */
-    public static final int MAX_LAYER_NUM = 10;
+    // 设置图层数据
+    public static final int LAYER_DATA_SET  = 0x00;
+    // 添加图层
+    public static final int LAYER_ADD       = 0x01;
+    // 删除图层
+    public static final int LAYER_DELETE    = 0x02;
+    // 选择图层
+    public static final int LAYER_CHOOSE    = 0x03;
+    // 图层顺序切换
+    public static final int LAYER_SWAP      = 0x04;
+    // Path添加
+    public static final int PATH_ADD        = 0x05;
+    // Path的矩阵添加
+    public static final int PATH_MATRIX_ADD = 0x06;
+    // Path删除
+    public static final int PATH_DELETE     = 0x07;
+    // Path渲染
+    public static final int PATH_DRAW       = 0x08;
+    // Path渲染结束
+    public static final int PATH_DRAW_OVER  = 0x09;
+    // Img添加
+    public static final int IMG_ADD         = 0x0a;
+    // Img删除
+    public static final int IMG_DELETE      = 0x0b;
+    // Img渲染
+    public static final int IMG_DRAW        = 0x0c;
+    // Img渲染结束
+    public static final int IMG_DRAW_OVER   = 0x0d;
 
     // ====== 单例 ======
 
@@ -51,167 +66,114 @@ public class LayerManager {
 
     // ====== 操作 ======
 
-    // 图层列表
-    private List<Layer> layerList = new ArrayList<>();
-    // 当前使用的图层
-    private Layer mLayer;
-    // 当前下标
-    private int   currentIndex;
-    private int   nowCreateIndex;
-
-    /**
-     * 创建图层
-     */
-    public int createLayer(int width, int height) {
-        String materialId = MaterialManager.getInstance().getMaterialId();
-        if (TextUtils.isEmpty(materialId)) {
-            return currentIndex;
-        }
-        if (layerList.size() == MAX_LAYER_NUM) {
-            return currentIndex;
-        }
-        Layer layer = new Layer();
-        layer.setMaterialId(materialId);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        layer.setBitmap(bitmap);
-        List<Layer.Draw> drawList = new ArrayList<>();
-        layer.setDrawList(drawList);
-        List<Layer.Drift> driftList = new ArrayList<>();
-        layer.setDriftList(driftList);
-        layerList.add(layer);
-        currentIndex = layerList.size() - 1;
-        layer.setTitle("图层" + nowCreateIndex++);
-        mLayer = layer;
-        // 添加历史
-        HistoryManager.getInstance().addHistory(currentIndex, 0);
-        return currentIndex;
+    //  设置图层数据
+    public void setLayerList(List<Layer> layerList) {
+        LayerTask.getInstance().setLayerList(layerList);
+        doOperateListener(LAYER_DATA_SET, layerList, null);// 参数一：当前图层数据
+        if (layerList != null && layerList.size() > 0)
+            doOperateListener(LAYER_CHOOSE, layerList.get(0), null);// 参数一：当前图层数据
     }
 
-    /**
-     * 删除图层
-     */
-    public int deleteLayer(int index) {
-        if (layerList != null) {
-            if (index >= 0 && index < layerList.size()) {
-                layerList.remove(index);
-                // 切换到下一个图层
-                index++;
-                switchLayer(index);
+    // 添加图层
+    public void addLayer(int layerWidth, int layerHeight) {
+        Layer resultLayer = LayerTask.getInstance().createLayer(layerWidth, layerHeight);
+        // 切换到当前图层
+        doOperateListener(LAYER_ADD, resultLayer, null);
+    }
+
+    // 删除图层
+    public void deleteLayer(Layer deleteLayer) {
+        Layer resultLayer = LayerTask.getInstance().deleteLayer(deleteLayer);
+        doOperateListener(LAYER_DELETE, resultLayer, null);
+    }
+
+    // 选择图层
+    public void chooseLayer(Layer chooseLayer) {
+        Log.d("LayerManager", "chooseLayer: chooseLayer = onTouch:" + chooseLayer);
+        LayerTask.getInstance().switchLayer(chooseLayer);
+        doOperateListener(LAYER_CHOOSE, chooseLayer, null);// 参数一：当前选择的图层下标
+    }
+
+    // 图层顺序切换
+    public void swapLayer(int fromPosition, int toPosition) {
+        LayerTask.getInstance().swapLayer(fromPosition, toPosition);
+        doOperateListener(LAYER_SWAP, fromPosition, toPosition);
+    }
+
+    // Path添加
+    public void addPathDraw(Path path) {
+        doOperateListener(PATH_ADD, path, null);
+    }
+
+    // 添加Path矩阵
+    public void addPathMatrix(Matrix matrix, Layer.Draw pathDraw) {
+        pathDraw.setMatrix(matrix);
+        doOperateListener(PATH_MATRIX_ADD, matrix, pathDraw);
+    }
+
+    // Path删除
+    public void deletePathDraw() {
+
+    }
+
+    // Path渲染
+    public void renderPathDraw() {
+        doOperateListener(PATH_DRAW, null, null);
+    }
+
+    // Path渲染结束
+    public void renderOverPathDraw() {
+        doOperateListener(PATH_DRAW_OVER, null, null);
+    }
+
+    // Img添加
+    public void addImgDraw() {
+
+    }
+
+    // Img删除
+    public void deleteImgDraw() {
+
+    }
+
+    // Img渲染
+    public void renderImgDraw() {
+
+    }
+
+    // Img渲染结束
+    public void renderOverImgDraw() {
+
+    }
+
+    // ======== 监听 ========
+
+    private List<OnOperateListener> operateListenerList;
+
+    // 执行监听
+    private void doOperateListener(int type, Object param1, Object param2) {
+        if (operateListenerList != null) {
+            for (OnOperateListener onOperateListener : operateListenerList) {
+                onOperateListener.onOperate(type, param1, param2);
             }
         }
-        return currentIndex;
     }
 
-    /**
-     * 切换图层
-     */
-    public void switchLayer(int index) {
-        Log.d("LayerManager", "switchLayer: index = " + index + " size = " + layerList.size());
-        if (layerList != null && layerList.size() > 0) {
-            if (index < 0)
-                index = 0;
-            if (index > layerList.size() - 1)
-                index = layerList.size() - 1;
-            currentIndex = index;
-            mLayer = layerList.get(index);
-        } else {
-            currentIndex = -1;
-            mLayer = null;
-        }
+    // 添加监听
+    public void addOperateListener(OnOperateListener operateListener) {
+        if (operateListenerList == null)
+            operateListenerList = new ArrayList<>();
+        operateListenerList.add(operateListener);
     }
 
-    public List<Layer> getLayerList() {
-        return layerList;
+    // 移除监听
+    public void removeOperateListener(OnOperateListener operateListener) {
+        if (operateListenerList != null)
+            operateListenerList.remove(operateListener);
     }
 
-    // ======== 图层内部操作 ========
-
-    /**
-     * 清除最后一个Draw
-     */
-    public Layer.Draw removeDraw() {
-        Layer.Draw draw = null;
-        if (mLayer != null) {
-            List<Layer.Draw> drawList = mLayer.getDrawList();
-            if (drawList != null && drawList.size() > 0) {
-                draw = drawList.remove(drawList.size() - 1);
-            }
-        }
-        return draw;
-    }
-
-    /**
-     * 清除最后一个Drift
-     */
-    public Layer.Drift removeDrift() {
-        Layer.Drift drift = null;
-        if (mLayer != null) {
-            List<Layer.Drift> driftList = mLayer.getDriftList();
-            if (driftList != null && driftList.size() > 0) {
-                drift = driftList.remove(driftList.size() - 1);
-            }
-        }
-        return drift;
-    }
-
-    private Layer.Draw draw;
-    private Bitmap     layerBitmap;
-    private Canvas     canvasTemp;
-
-    /**
-     * 添加本次绘制效果
-     * 保留之前的Bitmap，重新设置一个Bitmap，绘制时先将原先的Bitmap绘制上去，再将目前的Path也绘制上去
-     */
-    public void createDraw(Path path) {
-        if (mLayer != null) {
-            layerBitmap = mLayer.getBitmap();
-            Bitmap drawBitmap = Bitmap.createBitmap(layerBitmap.getWidth(), layerBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            canvasTemp = new Canvas(drawBitmap);
-            canvasTemp.drawColor(Color.TRANSPARENT);
-            mLayer.setBitmap(drawBitmap);
-            draw = new Layer.Draw();
-            Paint paint = PaintManager.getInstance().getPaint();
-            draw.setPaint(paint);
-            draw.setPath(path);
-            // 添加到历史记录
-        }
-    }
-
-    /**
-     * 绘制Path
-     */
-    public void drawPath() {
-        if (mLayer != null && draw != null) {
-            canvasTemp.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            canvasTemp.drawBitmap(layerBitmap, 0, 0, null);
-            canvasTemp.drawPath(draw.getPath(), draw.getPaint());
-        }
-    }
-
-    /**
-     * 绘制Path
-     */
-    public void drawOver() {
-        if (layerBitmap != null && !layerBitmap.isRecycled()) {
-            layerBitmap.recycle();
-        }
-    }
-
-    /**
-     * 创建位移信息
-     */
-    public void createDrift(Matrix matrix) {
-        Layer.Drift drift = new Layer.Drift();
-        drift.setMatrix(matrix);
-        if (mLayer != null)
-            mLayer.getDriftList().add(drift);
-        // 添加到历史记录
-    }
-
-    /**
-     * 创建历史记录
-     */
-    private void createHistory(Layer.Draw draw, Layer.Drift drift, int index, int type) {
-        // HistoryManager.getInstance().addHistory(draw, drift, index, type);
+    // 操作监听类
+    public interface OnOperateListener {
+        void onOperate(int type, Object param1, Object param2);
     }
 }

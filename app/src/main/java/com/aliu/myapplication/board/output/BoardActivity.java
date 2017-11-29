@@ -16,8 +16,10 @@ import com.aliu.myapplication.board.output.assist.LayerAssist;
 import com.aliu.myapplication.board.output.assist.SkinAssist;
 import com.aliu.myapplication.board.paint.PaintManager;
 import com.aliu.myapplication.board.shape.ShapeManager;
+import com.aliu.myapplication.board.transform.TransformManager;
 import com.ikould.frame.activity.BaseActivity;
 import com.ikould.frame.activity.OnPermissionResultListener;
+import com.ikould.frame.utils.ScreenUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,7 +77,7 @@ public class BoardActivity extends BaseActivity {
      * 初始化配置
      */
     private void initConfig() {
-        MaterialManager.getInstance().setMaterialId("XXOO");
+        MaterialManager.getInstance().initMaterial(null, ScreenUtils.getScreenWidth(this), ScreenUtils.getScreenHeight(this));
         LayerAssist.getInstance().bindView(this, graffitiViewGroup, rvLayer);
         SkinAssist.getInstance().initSkin(this, llBottom);
     }
@@ -141,6 +143,7 @@ public class BoardActivity extends BaseActivity {
                 ShapeManager.getInstance().setShapeType(shapes[nowShapeIndex % shapes.length]);
                 break;
             case R.id.path_transform:
+                TransformManager.getInstance().setDoTransform(!TransformManager.getInstance().getIsDoTransform());
                 //graffitiViewGroup.setToTransform();
                 break;
         }
