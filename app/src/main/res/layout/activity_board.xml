@@ -19,12 +19,21 @@
         android:layout_above="@+id/ll_bottom"
         android:background="#ccc"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/xx_110">
+
+        <Button
+            android:layout_width=""
+            android:layout_height=""/>
+    </LinearLayout>
     <HorizontalScrollView
         android:id="@+id/ll_bottom"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentLeft="true"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"

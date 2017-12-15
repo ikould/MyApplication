@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.aliu.myapplication.board.bean.Layer;
@@ -23,10 +24,10 @@ import java.util.List;
  */
 public class LayerView extends View {
 
-    private Layer      mLayer;
-    private Layer.Draw currentPathDraw;
-    private Bitmap     layerBitmap;
-    private Canvas     canvasTemp;
+    private Layer          mLayer;
+    private Layer.PathDraw currentPathDraw;
+    private Bitmap         layerBitmap;
+    private Canvas         canvasTemp;
 
     public LayerView(Context context) {
         super(context);
@@ -58,21 +59,6 @@ public class LayerView extends View {
         }
     }
 
-    /**
-     * 清除最后一个Draw
-     */
-    public Layer.Draw removeDraw() {
-        Layer.Draw draw = null;
-        if (mLayer != null) {
-            List<Layer.Draw> drawList = mLayer.getDrawList();
-            if (drawList != null && drawList.size() > 0) {
-                draw = drawList.remove(drawList.size() - 1);
-            }
-        }
-        return draw;
-    }
-
-
     // ======== 引入图片 ========
 
     /**
@@ -80,10 +66,10 @@ public class LayerView extends View {
      */
     public void createDraw(Bitmap bitmap) {
         if (mLayer != null) {
-            Layer.Draw pathDraw = new Layer.Draw();
-            pathDraw.setBitmap(bitmap);
+            Layer.BitmapDraw bitmapDraw = new Layer.BitmapDraw();
+            bitmapDraw.setBitmap(bitmap);
             RectF rectF = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            pathDraw.setRectF(rectF);
+            //  pathDraw.setRectF(rectF);
             Canvas canvas = new Canvas(mLayer.getBitmap());
             canvas.drawColor(Color.TRANSPARENT);
             canvas.drawBitmap(bitmap, 0, 0, null);
@@ -103,7 +89,7 @@ public class LayerView extends View {
             canvasTemp = new Canvas(drawBitmap);
             canvasTemp.drawColor(Color.TRANSPARENT);
             mLayer.setBitmap(drawBitmap);
-            currentPathDraw = new Layer.Draw();
+            currentPathDraw = new Layer.PathDraw();
             Paint paint = PaintManager.getInstance().getPaint();
             currentPathDraw.setPaint(paint);
             currentPathDraw.setPath(path);
@@ -145,9 +131,9 @@ public class LayerView extends View {
     /**
      * 选择的PathDraw
      */
-    public void choosePathDraw(Layer.Draw pathDraw) {
+    public void choosePathDraw(Layer.PathDraw pathDraw) {
         currentPathDraw = pathDraw;
-        List<Layer.Draw> pathDrawList = mLayer.getDrawList();
+        List<Layer.PathDraw> pathDrawList = mLayer.getDrawList();
         int index = pathDrawList.indexOf(pathDraw);
         layerBitmap = mLayer.getBitmap();
         if (index > 0) { // 底部的Bitmap
@@ -155,7 +141,7 @@ public class LayerView extends View {
             Canvas canvas = new Canvas(belowBitmap);
             canvas.drawColor(Color.TRANSPARENT);
             for (int i = 0; i < index; i++) {
-                Layer.Draw pathDraw1 = pathDrawList.get(i);
+                Layer.PathDraw pathDraw1 = pathDrawList.get(i);
                 canvas.drawPath(pathDraw1.getPath(), pathDraw1.getPaint());
             }
         }
@@ -164,7 +150,7 @@ public class LayerView extends View {
             Canvas canvas = new Canvas(overBitmap);
             canvas.drawColor(Color.TRANSPARENT);
             for (int i = index + 1; i < pathDrawList.size(); i++) {
-                Layer.Draw pathDraw1 = pathDrawList.get(i);
+                Layer.PathDraw pathDraw1 = pathDrawList.get(i);
                 canvas.drawPath(pathDraw1.getPath(), pathDraw1.getPaint());
             }
         }
@@ -188,7 +174,7 @@ public class LayerView extends View {
     public void drawMatrixPath() {
         if (mLayer != null && currentPathDraw != null) {
             canvasTemp.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            Matrix matrix = currentPathDraw.getMatrix();
+            Matrix matrix = currentPathDraw.getPositionInfo();
             if (matrix == null) {
                 return;
             }

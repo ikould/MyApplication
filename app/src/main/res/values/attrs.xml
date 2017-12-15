@@ -1,3 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="StatusView">
+        <attr name="TouchAlpha" format="float"/>
+        <attr name="DisabledAlpha" format="float"/>
+        <attr name="UseEnable" format="boolean"/>
+    </declare-styleable>
 </resources>

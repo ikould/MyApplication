@@ -52,7 +52,7 @@ public class HistoryManager {
      * @param draw       绘制具体操作
      * @param layerIndex 当前图层下标
      */
-    public void addHistory(Layer.Draw draw, int layerIndex) {
+    public void addHistory(Layer.PathDraw draw, int layerIndex) {
         DrawHistory drawHistory = new DrawHistory();
         drawHistory.setDraw(draw);
         drawHistory.setLayerIndex(layerIndex);

@@ -1,12 +1,12 @@
 package com.aliu.myapplication.board.bean;
 
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
+import android.graphics.Point;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,10 +25,8 @@ public class Layer {
     private String title;
     // 预览图
     private Bitmap bitmap;
-    // 绘制Path、Paint集合
-    private List<Draw>   drawList = new ArrayList<>();
-    // 引入的图片集合
-    private List<Bitmap> imgList  = new ArrayList<>();
+    // 绘制集合 Draw 可以为 BitmapDraw/PathDraw
+    private List<Draw> drawList = new ArrayList<>();
 
     public Layer() {
     }
@@ -69,31 +67,46 @@ public class Layer {
         return drawList;
     }
 
-    public void setDrawList(List<Draw> drawList) {
-        this.drawList = drawList;
-    }
-
-    public List<Bitmap> getImgList() {
-        return imgList;
-    }
-
-    public void setImgList(List<Bitmap> imgList) {
-        this.imgList = imgList;
-    }
-
-    public static class Draw {
-        // 当前的画笔
-        private Paint  paint;
-        // 当前的Path
-        private Path   path;
-        // 当前的Bitmap
+    public static class BitmapDraw extends Draw {
         private Bitmap bitmap;
-        // 范围
-        private RectF  rectF;
-        // 当前的矩阵
-        private Matrix matrix;
+        private List<float[]> positionInfoList = new ArrayList<>();
 
-        public Draw() {
+        public BitmapDraw() {
+        }
+
+        public Bitmap getBitmap() {
+            return bitmap;
+        }
+
+        public void setBitmap(Bitmap bitmap) {
+            this.bitmap = bitmap;
+        }
+
+        public List<float[]> getPositionInfoList() {
+            return positionInfoList;
+        }
+
+        public void setPositionInfoList(List<float[]> positionInfoList) {
+            this.positionInfoList = positionInfoList;
+        }
+
+        @Override
+        public String toString() {
+            return "BitmapDraw{" +
+                    "bitmap=" + bitmap +
+                    ", positionInfoList=" + positionInfoList +
+                    '}';
+        }
+    }
+
+    public static class PathDraw extends Draw {
+        // 当前的画笔
+        private Paint paint;
+        // 当前的Path
+        private Path  path;
+
+        public PathDraw() {
+            super();
         }
 
         public Paint getPaint() {
@@ -111,40 +124,25 @@ public class Layer {
         public void setPath(Path path) {
             this.path = path;
         }
+    }
 
-        public Bitmap getBitmap() {
-            return bitmap;
+    public static abstract class Draw {
+
+        private Point[] positionPoints;
+
+        public Draw() {
+            positionPoints = new Point[4];
+            for (int i = 0; i < positionPoints.length; i++) {
+                positionPoints[i] = new Point();
+            }
         }
 
-        public void setBitmap(Bitmap bitmap) {
-            this.bitmap = bitmap;
+        public Point[] getPositionPoints() {
+            return positionPoints;
         }
 
-        public RectF getRectF() {
-            return rectF;
-        }
-
-        public void setRectF(RectF rectF) {
-            this.rectF = rectF;
-        }
-
-        public Matrix getMatrix() {
-            return matrix;
-        }
-
-        public void setMatrix(Matrix matrix) {
-            this.matrix = matrix;
-        }
-
-        @Override
-        public String toString() {
-            return "Draw{" +
-                    "paint=" + paint +
-                    ", path=" + path +
-                    ", bitmap=" + bitmap +
-                    ", rectF=" + rectF +
-                    ", matrix=" + matrix +
-                    '}';
+        public void setPositionPoints(Point[] positionPoints) {
+            this.positionPoints = positionPoints;
         }
     }
 
@@ -156,7 +154,6 @@ public class Layer {
                 ", title='" + title + '\'' +
                 ", bitmap=" + bitmap +
                 ", drawList=" + drawList +
-                ", imgList=" + imgList +
                 '}';
     }
 }

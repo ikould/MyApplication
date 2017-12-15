@@ -106,8 +106,8 @@ public class LayerManager {
     }
 
     // 添加Path矩阵
-    public void addPathMatrix(Matrix matrix, Layer.Draw pathDraw) {
-        pathDraw.setMatrix(matrix);
+    public void addPathMatrix(Matrix matrix, Layer.PathDraw pathDraw) {
+        pathDraw.setPositionInfo(matrix);
         doOperateListener(PATH_MATRIX_ADD, matrix, pathDraw);
     }
 

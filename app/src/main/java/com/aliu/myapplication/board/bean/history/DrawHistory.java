@@ -10,10 +10,10 @@ import com.aliu.myapplication.board.bean.Layer;
 
 public class DrawHistory {
 
-    private int        id;
-    private Layer.Draw draw;
+    private int            id;
+    private Layer.PathDraw draw;
     // 图层下标
-    private int        layerIndex;
+    private int            layerIndex;
 
     public DrawHistory() {
     }
@@ -26,11 +26,11 @@ public class DrawHistory {
         this.id = id;
     }
 
-    public Layer.Draw getDraw() {
+    public Layer.PathDraw getDraw() {
         return draw;
     }
 
-    public void setDraw(Layer.Draw draw) {
+    public void setDraw(Layer.PathDraw draw) {
         this.draw = draw;
     }
 
